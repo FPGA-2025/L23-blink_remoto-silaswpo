@@ -23,11 +23,11 @@ always @(posedge clk) begin
         if (led_on && counter >= ON_TIME_CYCLES) begin
             counter <= 0;
             led_on  <= 1'b0;
-            leds    <= 8'b00000000; // Desliga todos
+            leds    <= 8'b11100000; // Desliga todos
         end else if (!led_on && counter >= OFF_TIME_CYCLES) begin
             counter <= 0;
             led_on  <= 1'b1;
-            leds    <= 8'b01010101; // Liga 0,2,4,6
+            leds    <= 8'b01111111; // Liga 0,2,4,6
         end
     end
 end
