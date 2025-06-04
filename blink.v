@@ -34,8 +34,8 @@ always @(posedge clk) begin
 
             // Modifique aqui quais LEDs piscam:
             //leds[0] <= ~leds[0];  // pisca apenas o LED 0
-             leds <= ~leds;     // todos os LEDs piscam juntos
-            // leds[3] <= ~leds[3]; // apenas o LED 3 pisca
+             //leds <= ~leds;     // todos os LEDs piscam juntos
+             leds[3] <= ~leds[3]; // apenas o LED 3 pisca
         end else begin
             counter <= counter + 1;
         end
