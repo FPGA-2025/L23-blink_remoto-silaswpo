@@ -1,2 +1,3 @@
 VCD info: dumpfile blink.vcd opened for output.
 === OK
+tb.v:16: $finish called at 1002 (1ns)
