@@ -6,51 +6,40 @@ module Blink #(
     output reg [7:0] leds
 );
 
-reg [7:0] brightness [7:0]; // brilho individual
-reg [7:0] pwm_counter;
-reg [31:0] step_counter;
-reg [3:0] index;
-reg ascending;
-integer i;
+// Parâmetros PWM
+localparam PWM_RESOLUTION = 8;                // 8-bit PWM
+localparam PWM_MAX = (1 << PWM_RESOLUTION)-1; // 255
 
-// PWM e controle de brilho
-always @(posedge clk or negedge rst_n) begin
+// Tempo entre inversões da máscara (em ciclos de clock)
+localparam SWITCH_TIME_CYCLES = CLK_FREQ * 4;
+
+reg [31:0] counter;
+reg [7:0] led_mask;               // Indica quais LEDs estão "ativos"
+reg [7:0] brightness_level;       // Intensidade do brilho dos LEDs ativos
+reg [PWM_RESOLUTION-1:0] pwm_counter;
+
+always @(posedge clk) begin
     if (!rst_n) begin
-        pwm_counter  <= 0;
-        step_counter <= 0;
-        index        <= 0;
-        ascending    <= 1;
-        for (i = 0; i < 8; i = i + 1)
-            brightness[i] <= 0;
+        counter          <= 0;
+        pwm_counter      <= 0;
+        brightness_level <= PWM_MAX;
+        led_mask         <= 8'b01010101; // Inicia com LEDs 0,2,4,6
     end else begin
+        // PWM counter incrementa continuamente
         pwm_counter <= pwm_counter + 1;
 
-        // Geração do PWM para cada LED
-        for (i = 0; i < 8; i = i + 1)
-            leds[i] <= (pwm_counter < brightness[i]);
+        // Controle de intensidade (PWM por software)
+        // led está "ligado" se: pwm_counter < brightness_level AND led_mask[i] = 1
+        for (int i = 0; i < 8; i = i + 1) begin
+            leds[i] <= (pwm_counter < brightness_level) ? led_mask[i] : 1'b0;
+        end
 
-        // Atualiza o brilho a cada 2 segundos
-        step_counter <= step_counter + 1;
-        if (step_counter >= (CLK_FREQ * 2)) begin
-            step_counter <= 0;
-
-            if (ascending) begin
-                brightness[index] <= (index + 1) * 32; // brilho proporcional
-                if (index == 7) begin
-                    ascending <= 0;
-                    index <= 0;
-                end else begin
-                    index <= index + 2;
-                end
-            end else begin
-                brightness[index] <= 0;
-                if (index == 7) begin
-                    ascending <= 1;
-                    index <= 0;
-                end else begin
-                    index <= index + 2;
-                end                
-            end
+        // Atualização da máscara e intensidade com o tempo
+        counter <= counter + 1;
+        if (counter >= SWITCH_TIME_CYCLES) begin
+            counter <= 0;
+            brightness_level <= PWM_MAX - brightness_level; // Inverte o brilho
+            led_mask <= ~led_mask;                          // Inverte LEDs ativos
         end
     end
 end
