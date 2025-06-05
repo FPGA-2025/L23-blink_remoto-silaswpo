@@ -16,6 +16,7 @@ always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         pwm_counter <= 0;
         slow_counter <= 0;
+        
         for (i = 0; i < 8; i = i + 1)
             brightness[i] <= i * 32;  // exemplo: brilho crescente
     end else begin
