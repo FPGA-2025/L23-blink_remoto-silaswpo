@@ -41,6 +41,7 @@ always @(posedge clk) begin
                     index <= index + 1;
                 end
             end
+            
         end
     end
 end
