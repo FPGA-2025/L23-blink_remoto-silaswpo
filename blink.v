@@ -40,7 +40,7 @@ always @(posedge clk or negedge rst_n) begin
                     ascending <= 0;
                     index <= 0;
                 end else begin
-                    index <= index + 1;
+                    index <= index + 2;
                 end
             end else begin
                 brightness[index] <= 0;
@@ -48,7 +48,7 @@ always @(posedge clk or negedge rst_n) begin
                     ascending <= 1;
                     index <= 0;
                 end else begin
-                    index <= index + 1;
+                    index <= index + 2;
                 end                
             end
         end
