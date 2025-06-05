@@ -23,6 +23,7 @@ always @(posedge clk or negedge rst_n) begin
 brightness[0] <= 32;   // LED 0 = 12% brilho
 brightness[1] <= 64;   // LED 1 = 25%
 brightness[2] <= 96;   // LED 2 = 38%
+
 brightness[3] <= 128;  // LED 3 = 50%
 brightness[4] <= 160;  // LED 4 = 63%
 brightness[5] <= 192;  // LED 5 = 75%
