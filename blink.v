@@ -6,42 +6,50 @@ module Blink #(
     output reg [7:0] leds
 );
 
-localparam STEP_TIME = CLK_FREQ * 2;  // 2 segundos por etapa
+reg [7:0] brightness [7:0]; // brilho individual
+reg [7:0] pwm_counter;
+reg [31:0] step_counter;
+reg [3:0] index;
+reg ascending;
+integer i;
 
-reg [31:0] counter;
-reg [3:0] index;  // contador de qual LED está sendo alterado
-reg ascending;    // 1 = ligando, 0 = desligando
-
-always @(posedge clk) begin
+// PWM e controle de brilho
+always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        counter   <= 0;
-        index     <= 0;
-        ascending <= 1'b1;
-        leds      <= 8'b00000000;
+        pwm_counter  <= 0;
+        step_counter <= 0;
+        index        <= 0;
+        ascending    <= 1;
+        for (i = 0; i < 8; i = i + 1)
+            brightness[i] <= 0;
     end else begin
-        counter <= counter + 1;
+        pwm_counter <= pwm_counter + 1;
 
-        if (counter >= STEP_TIME) begin
-            counter <= 0;
+        for (i = 0; i < 8; i = i + 1)
+            leds[i] <= (pwm_counter < brightness[i]);
+
+        // Atualiza brilho a cada 2 segundos
+        step_counter <= step_counter + 1;
+        if (step_counter >= (CLK_FREQ * 2)) begin
+            step_counter <= 0;
 
             if (ascending) begin
-                leds[index] <= 1'b1;
+                brightness[index] <= 255;
                 if (index == 7) begin
-                    ascending <= 1'b0;
+                    ascending <= 0;
                     index <= 0;
                 end else begin
                     index <= index + 1;
                 end
             end else begin
-                leds[index] <= 1'b0;
+                brightness[index] <= 0;
                 if (index == 7) begin
-                    ascending <= 1'b1;
+                    ascending <= 1;
                     index <= 0;
                 end else begin
                     index <= index + 1;
                 end
             end
-            
         end
     end
 end
