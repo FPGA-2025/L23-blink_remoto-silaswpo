@@ -28,6 +28,7 @@ always @(posedge clk or negedge rst_n) begin
         for (i = 0; i < 8; i = i + 1)
             leds[i] <= (pwm_counter < brightness[i]);
 
+
         // Atualiza brilho a cada 2 segundos
         step_counter <= step_counter + 1;
         if (step_counter >= (CLK_FREQ * 2)) begin
