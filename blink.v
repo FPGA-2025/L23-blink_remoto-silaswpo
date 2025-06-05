@@ -49,8 +49,7 @@ always @(posedge clk or negedge rst_n) begin
                     index <= 0;
                 end else begin
                     index <= index + 1;
-                end
-                
+                end                
             end
         end
     end
