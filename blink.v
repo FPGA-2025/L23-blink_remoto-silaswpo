@@ -50,6 +50,7 @@ always @(posedge clk or negedge rst_n) begin
                 end else begin
                     index <= index + 1;
                 end
+                
             end
         end
     end
