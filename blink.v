@@ -19,6 +19,7 @@ reg [PWM_RESOLUTION-1:0] pwm_counter;
 reg [31:0] fade_counter;
 integer i;
 
+
 always @(posedge clk) begin
     if (!rst_n) begin
         pwm_counter  <= 0;
