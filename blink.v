@@ -16,7 +16,6 @@ reg [7:0] brightness_a = PWM_MAX;  // grupo 1: começa aceso
 reg [7:0] brightness_b = 8'd0;     // grupo 2: começa apagado
 reg [PWM_RESOLUTION-1:0] pwm_counter;
 
-
 reg [31:0] fade_counter;
 integer i;
 
